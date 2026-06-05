@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Secrets / environment
+.env
+token
+stored_tokens
+
+# Datasets & model caches (large, not for release)
+data/
+hub/
+xet/
+
+# Generated outputs (large)
+llm_data/
+similarity_score_files/
+previous_llm_data/
+results/
+results_v6/
+results_v8_v10/
+out_results/
+correlated_error_analysis/
+*.csv
+
+# SLURM logs
+*.err
+*.out
+
+# Figures / binaries (re-added for the final release per the cleanup plan)
+*.png
+*.pdf
+artifacts/
+plots/

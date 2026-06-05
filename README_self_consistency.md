@@ -1,0 +1,1 @@
+Read @main_1_direct_prompting_gemini.py, I want you to write code for self-consistency method for the same datasets, and the same system and user prompt

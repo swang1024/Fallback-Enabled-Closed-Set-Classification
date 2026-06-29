@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0}
+  ::selection{background:#dcdcfb}
+  section[id]{scroll-margin-top:78px}
+  @keyframes flowDash{to{stroke-dashoffset:-16}}
+  @keyframes pulseRing{0%{box-shadow:0 0 0 0 rgba(79,70,229,.35)}70%{box-shadow:0 0 0 12px rgba(79,70,229,0)}100%{box-shadow:0 0 0 0 rgba(79,70,229,0)}}
+  @keyframes auroraA{0%{transform:translate(0,0) scale(1)}50%{transform:translate(6%,-5%) scale(1.18)}100%{transform:translate(0,0) scale(1)}}
+  @keyframes auroraB{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-7%,6%) scale(1.12)}100%{transform:translate(0,0) scale(1)}}
+  @keyframes spinDot{0%{box-shadow:0 0 0 0 rgba(79,70,229,.4)}70%{box-shadow:0 0 0 7px rgba(79,70,229,0)}100%{box-shadow:0 0 0 0 rgba(79,70,229,0)}}
+  .lift{transition:transform .22s cubic-bezier(.22,1,.36,1),box-shadow .22s ease}
+  .lift:hover{transform:translateY(-3px);box-shadow:0 1px 2px rgba(0,0,0,.04),0 22px 40px -28px rgba(28,27,26,.45)!important}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important}}
+  @media (max-width:880px){.flow-wrap{flex-direction:column!important}.flow-arrow{transform:rotate(90deg)!important}.split-2{grid-template-columns:1fr!important}.demo-grid{grid-template-columns:1fr!important}.hero-grid{grid-template-columns:1fr!important}.metrics-grid{grid-template-columns:1fr 1fr!important}}
+</style>
+</helmet>
+
+
+<div style="font-family:'IBM Plex Sans',system-ui,sans-serif;background:#FBFAF8;color:#1C1B1A;min-height:100vh;-webkit-font-smoothing:antialiased;line-height:1.5">
+
+  <!-- NAV -->
+  <nav style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px clamp(20px,5vw,56px);background:rgba(251,250,248,.82);backdrop-filter:blur(12px);border-bottom:1px solid #E7E5E0">
+    <div style="display:flex;align-items:center;gap:10px;min-width:0">
+      <div style="width:26px;height:26px;border-radius:7px;background:#4F46E5;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <div style="width:11px;height:11px;border:2px solid #fff;border-radius:3px"></div>
+      </div>
+      <span style="font-weight:600;font-size:14.5px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Fallback-Aware VLM</span>
+      <span style="font-size:11px;font-family:'IBM Plex Mono',monospace;color:#9A968E;border:1px solid #E7E5E0;border-radius:5px;padding:2px 6px;white-space:nowrap">TMLR</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px">
+      <a href="#method" style="display:none;padding:7px 12px;border-radius:8px;font-size:13.5px;color:#54514B;text-decoration:none">Method</a>
+      <a href="#demo" style="padding:7px 12px;border-radius:8px;font-size:13.5px;color:#54514B;text-decoration:none">Demo</a>
+      <a href="#errors" style="padding:7px 12px;border-radius:8px;font-size:13.5px;color:#54514B;text-decoration:none">Errors</a>
+      <a href="#results" style="padding:7px 12px;border-radius:8px;font-size:13.5px;color:#54514B;text-decoration:none">Results</a>
+      <a href="#demo" style="padding:8px 14px;border-radius:8px;font-size:13.5px;font-weight:600;color:#fff;background:#1C1B1A;text-decoration:none">Try it</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header style="position:relative;overflow:hidden;max-width:1180px;margin:0 auto;padding:clamp(40px,7vw,84px) clamp(20px,5vw,56px) clamp(28px,4vw,48px)">
+    <div aria-hidden="true" style="position:absolute;top:-160px;left:-80px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle at 50% 50%,rgba(79,70,229,.16),transparent 62%);filter:blur(18px);animation:auroraA 16s ease-in-out infinite;pointer-events:none"></div>
+    <div aria-hidden="true" style="position:absolute;top:40px;right:-120px;width:480px;height:480px;border-radius:50%;background:radial-gradient(circle at 50% 50%,rgba(194,65,12,.12),transparent 62%);filter:blur(20px);animation:auroraB 19s ease-in-out infinite;pointer-events:none"></div>
+    <div aria-hidden="true" style="position:absolute;inset:0;background-image:linear-gradient(#1c1b1a 1px,transparent 1px),linear-gradient(90deg,#1c1b1a 1px,transparent 1px);background-size:42px 42px;opacity:.025;pointer-events:none;mask-image:radial-gradient(ellipse 80% 70% at 50% 30%,#000,transparent 75%);-webkit-mask-image:radial-gradient(ellipse 80% 70% at 50% 30%,#000,transparent 75%)"></div>
+    <div class="hero-grid" style="position:relative;display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(32px,5vw,64px);align-items:center">
+      <div>
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:5px 11px;border:1px solid #E7E5E0;background:#fff;border-radius:999px;font-size:12.5px;color:#6B6862;margin-bottom:22px">
+          <span style="width:6px;height:6px;border-radius:50%;background:#4F46E5"></span>
+          Closed-set classification · vision-language models
+        </div>
+        <h1 style="font-family:'Newsreader',serif;font-weight:500;font-size:clamp(38px,6vw,62px);line-height:1.02;letter-spacing:-.02em;margin:0 0 18px">Fallback-Aware<br>VLM Classification</h1>
+        <p style="font-size:clamp(16px,2.4vw,19px);color:#54514B;max-width:30em;margin:0 0 30px;text-wrap:pretty">A cross-modal consistency check for knowing when a VLM should <em style="font-style:italic;color:#1C1B1A">abstain</em> — accept a label only when an image's visual and textual reasoning paths agree.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:12px">
+          <a href="#demo" style="display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:11px;background:#4F46E5;color:#fff;font-weight:600;font-size:15px;text-decoration:none;box-shadow:0 1px 2px rgba(79,70,229,.4),0 6px 20px -8px rgba(79,70,229,.5)">Try the Demo
+            <span style="font-size:17px;line-height:1">→</span>
+          </a>
+          <a href="#method" style="display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:11px;background:#fff;color:#1C1B1A;font-weight:600;font-size:15px;text-decoration:none;border:1px solid #E0DDD6">View Method</a>
+        </div>
+        <div style="display:flex;gap:26px;margin-top:34px;flex-wrap:wrap">
+          <div><div style="font-family:'Newsreader',serif;font-size:30px;font-weight:600;letter-spacing:-.02em">78.2</div><div style="font-size:12.5px;color:#8A867E;margin-top:1px">H-score (ours)</div></div>
+          <div style="width:1px;background:#E7E5E0"></div>
+          <div><div style="font-family:'Newsreader',serif;font-size:30px;font-weight:600;letter-spacing:-.02em">+15.1</div><div style="font-size:12.5px;color:#8A867E;margin-top:1px">vs textual-only</div></div>
+          <div style="width:1px;background:#E7E5E0"></div>
+          <div><div style="font-family:'Newsreader',serif;font-size:30px;font-weight:600;letter-spacing:-.02em">2 arms</div><div style="font-size:12.5px;color:#8A867E;margin-top:1px">cross-modal vote</div></div>
+        </div>
+      </div>
+
+      <!-- hero diagram card -->
+      <div class="lift" style="position:relative;background:#fff;border:1px solid #E7E5E0;border-radius:18px;padding:24px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 30px 60px -40px rgba(0,0,0,.25)">
+        <div style="font-size:11.5px;font-family:'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:#9A968E;margin-bottom:16px">Pipeline</div>
+        <div style="display:flex;align-items:stretch;gap:10px;margin-bottom:14px">
+          <div style="flex:1;border:1px solid #E7E5E0;border-radius:11px;padding:12px;text-align:center;background:#FBFAF8">
+            <div style="width:34px;height:34px;border-radius:8px;background:#EDECF9;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;color:#4F46E5;font-weight:700">▦</div>
+            <div style="font-size:12.5px;font-weight:600">Image</div>
+          </div>
+          <div style="display:flex;align-items:center;color:#C4C0B8;font-size:18px">+</div>
+          <div style="flex:1;border:1px solid #E7E5E0;border-radius:11px;padding:12px;text-align:center;background:#FBFAF8">
+            <div style="width:34px;height:34px;border-radius:8px;background:#EDECF9;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;color:#4F46E5;font-weight:700">≡</div>
+            <div style="font-size:12.5px;font-weight:600">Label list</div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:center;color:#C4C0B8;font-size:16px;margin:2px 0 12px">↓</div>
+        <div style="display:flex;gap:10px;margin-bottom:12px">
+          <div style="flex:1;border:1.5px solid #C9CDF7;border-radius:11px;padding:11px 12px;background:#F4F4FE">
+            <div style="font-size:11px;color:#4F46E5;font-weight:600;font-family:'IBM Plex Mono',monospace">VISUAL ARM</div>
+            <div style="font-size:12px;color:#54514B;margin-top:3px">classify image → label</div>
+          </div>
+          <div style="flex:1;border:1.5px solid #C9CDF7;border-radius:11px;padding:11px 12px;background:#F4F4FE">
+            <div style="font-size:11px;color:#4F46E5;font-weight:600;font-family:'IBM Plex Mono',monospace">TEXTUAL ARM</div>
+            <div style="font-size:12px;color:#54514B;margin-top:3px">summarize → classify</div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:center;color:#C4C0B8;font-size:16px;margin-bottom:12px">↓</div>
+        <div style="border:1.5px solid #1C1B1A;border-radius:11px;padding:12px;text-align:center;background:#1C1B1A;color:#fff;margin-bottom:14px">
+          <div style="font-size:12.5px;font-weight:600">Consistency check</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#B9B6F2;margin-top:3px">y_vision = y_text  ∧  y_vision ∈ C</div>
+        </div>
+        <div style="display:flex;gap:10px">
+          <div style="flex:1;border:1px solid #C9CDF7;border-radius:11px;padding:11px;text-align:center;background:#EEF0FF">
+            <div style="font-size:13px;font-weight:700;color:#4F46E5">Known ✓</div>
+            <div style="font-size:11px;color:#6B6862;margin-top:2px">accept label</div>
+          </div>
+          <div style="flex:1;border:1px solid #F3C9A8;border-radius:11px;padding:11px;text-align:center;background:#FEF1E7">
+            <div style="font-size:13px;font-weight:700;color:#C2410C">Unknown ⤺</div>
+            <div style="font-size:11px;color:#6B6862;margin-top:2px">fallback / abstain</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- METHOD -->
+  <section id="method" style="max-width:1180px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,5vw,56px)">
+    <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:8px">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#4F46E5">01</span>
+      <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:clamp(26px,3.6vw,38px);letter-spacing:-.02em;margin:0">How the method works</h2>
+    </div>
+    <p style="color:#54514B;max-width:46em;margin:0 0 36px;font-size:16px;text-wrap:pretty">A single VLM pass is overconfident: forced to pick from a fixed label set, it will name <em>something</em> even for out-of-set images. We run two independent reasoning paths over the <strong>same</strong> label list and only trust the answer when they converge.</p>
+
+    <div class="flow-wrap" style="display:flex;align-items:stretch;gap:14px;margin-bottom:40px">
+      <div class="lift" style="flex:1;background:#fff;border:1px solid #E7E5E0;border-radius:16px;padding:22px">
+        <div style="display:inline-flex;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;color:#4F46E5;background:#EEF0FF;border-radius:6px;padding:3px 8px;margin-bottom:14px">VISUAL ARM</div>
+        <h3 style="font-size:16.5px;margin:0 0 7px;font-weight:600">Look, then label</h3>
+        <p style="font-size:14px;color:#6B6862;margin:0">The VLM classifies the pixels directly against the label list — fast, but anchored on low-level appearance and prone to confident near-misses.</p>
+      </div>
+      <div class="flow-arrow" style="display:flex;align-items:center;color:#C4C0B8;font-size:22px;font-weight:300">⇄</div>
+      <div class="lift" style="flex:1;background:#fff;border:1px solid #E7E5E0;border-radius:16px;padding:22px">
+        <div style="display:inline-flex;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;color:#4F46E5;background:#EEF0FF;border-radius:6px;padding:3px 8px;margin-bottom:14px">TEXTUAL ARM</div>
+        <h3 style="font-size:16.5px;margin:0 0 7px;font-weight:600">Describe, then label</h3>
+        <p style="font-size:14px;color:#6B6862;margin:0">The VLM first writes a free-form summary of the image, then a classifier reasons over that text and the same labels — anchored on semantics, not pixels.</p>
+      </div>
+      <div class="flow-arrow" style="display:flex;align-items:center;color:#C4C0B8;font-size:22px;font-weight:300">→</div>
+      <div class="lift" style="flex:1;background:#1C1B1A;color:#fff;border-radius:16px;padding:22px">
+        <div style="display:inline-flex;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;color:#B9B6F2;background:rgba(255,255,255,.08);border-radius:6px;padding:3px 8px;margin-bottom:14px">DECISION</div>
+        <h3 style="font-size:16.5px;margin:0 0 7px;font-weight:600">Agree, or abstain</h3>
+        <p style="font-size:14px;color:#C9C6BF;margin:0">Accept as <strong style="color:#fff">Known</strong> only if both arms name the same label and it's in the set. Any disagreement triggers <strong style="color:#fff">fallback → Unknown</strong>.</p>
+      </div>
+    </div>
+
+    <!-- equation -->
+    <div class="split-2" style="display:grid;grid-template-columns:1.1fr 1fr;gap:20px;align-items:center;background:#fff;border:1px solid #E7E5E0;border-radius:18px;padding:clamp(22px,3vw,34px)">
+      <div>
+        <div style="font-size:11.5px;font-family:'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:#9A968E;margin-bottom:16px">Acceptance indicator</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:clamp(18px,2.6vw,24px);line-height:1.7;color:#1C1B1A">
+          δ&#770; &nbsp;=&nbsp; <span style="background:#EEF0FF;border-radius:6px;padding:2px 7px">𝟙[ y<sub>vision</sub> = y<sub>text</sub> ]</span> &nbsp;·&nbsp; <span style="background:#EEF0FF;border-radius:6px;padding:2px 7px">𝟙[ y<sub>vision</sub> ∈ 𝒞 ]</span>
+        </div>
+      </div>
+      <div style="font-size:14px;color:#54514B;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;gap:10px"><span style="font-family:'IBM Plex Mono',monospace;color:#4F46E5;font-weight:600;min-width:34px">δ&#770;=1</span><span>arms agree <em>and</em> the label is in set 𝒞 → accept as <strong>Known</strong>.</span></div>
+        <div style="display:flex;gap:10px"><span style="font-family:'IBM Plex Mono',monospace;color:#C2410C;font-weight:600;min-width:34px">δ&#770;=0</span><span>otherwise → <strong>fallback</strong>, mark <strong>Unknown</strong> and abstain.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEMO -->
+  <section id="demo" style="max-width:1180px;margin:0 auto;padding:clamp(28px,4vw,52px) clamp(20px,5vw,56px)">
+    <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:8px">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#4F46E5">02</span>
+      <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:clamp(26px,3.6vw,38px);letter-spacing:-.02em;margin:0">Interactive demo</h2>
+    </div>
+    <p style="color:#54514B;max-width:46em;margin:0 0 28px;font-size:16px">Pick a dataset and a curated example, then run the cross-modal check to watch each reasoning step unfold.</p>
+
+    <div class="demo-grid" style="display:grid;grid-template-columns:380px 1fr;gap:22px;align-items:start">
+
+      <!-- LEFT: inputs -->
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <!-- dataset selector -->
+        <div style="background:#fff;border:1px solid #E7E5E0;border-radius:16px;padding:16px">
+          <div style="font-size:11.5px;font-family:'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:#9A968E;margin-bottom:11px">Dataset</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <sc-for list="{{ datasetChips }}" as="d" hint-placeholder-count="4">
+              <button onClick="{{ d.on }}" style="{{ d.style }}">{{ d.name }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- image area -->
+        <div style="background:#fff;border:1px solid #E7E5E0;border-radius:16px;padding:16px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:11px">
+            <div style="font-size:11.5px;font-family:'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:#9A968E">Input image</div>
+            <span style="font-size:11px;color:#9A968E">{{ ex.truthTag }}</span>
+          </div>
+          <sc-if value="{{ hasExample }}" hint-placeholder-val="{{ true }}">
+            <div style="border-radius:12px;overflow:hidden;border:1px solid #ECEAE5">
+              <div style="aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;position:relative;background:{{ ex.tileBg }}">
+                <div style="position:absolute;inset:0;opacity:.5;background-image:linear-gradient(135deg,rgba(255,255,255,.5) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.5) 50%,rgba(255,255,255,.5) 75%,transparent 75%);background-size:14px 14px"></div>
+                <div style="position:relative;text-align:center;padding:14px">
+                  <div style="font-size:34px;line-height:1;margin-bottom:8px">{{ ex.glyph }}</div>
+                  <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#3D3A35;background:rgba(255,255,255,.7);border-radius:6px;padding:3px 8px;display:inline-block">{{ ex.imgCaption }}</div>
+                </div>
+                <div style="position:absolute;top:8px;left:8px;font-size:10px;font-family:'IBM Plex Mono',monospace;background:rgba(28,27,26,.72);color:#fff;border-radius:5px;padding:2px 6px">{{ ex.datasetName }}</div>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ isCustom }}" hint-placeholder-val="{{ false }}">
+            <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="vlm-demo-upload" style="width:100%;aspect-ratio:16/10;display:block" shape="rounded" radius="12" placeholder="Drop an image (prototype)" hint-size="100%,200px"></x-import>
+            <p style="font-size:12px;color:#9A968E;margin:10px 0 0">Custom uploads are illustrative — pick a curated example for a full mock trace.</p>
+          </sc-if>
+        </div>
+
+        <!-- examples -->
+        <div style="background:#fff;border:1px solid #E7E5E0;border-radius:16px;padding:16px">
+          <div style="font-size:11.5px;font-family:'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:#9A968E;margin-bottom:11px">Curated examples</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <sc-for list="{{ exampleCards }}" as="e" hint-placeholder-count="4">
+              <button onClick="{{ e.on }}" style="{{ e.style }}">
+                <span style="width:30px;height:30px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:15px;background:{{ e.tileBg }}">{{ e.glyph }}</span>
+                <span style="text-align:left;min-width:0;flex:1">
+                  <span style="display:block;font-size:13px;font-weight:600;color:#1C1B1A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ e.title }}</span>
+                  <span style="display:block;font-size:11.5px;color:#8A867E">{{ e.sub }}</span>
+                </span>
+                <span style="font-size:10px;font-family:'IBM Plex Mono',monospace;font-weight:600;border-radius:999px;padding:2px 7px;{{ e.tagStyle }}">{{ e.tag }}</span>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- label list -->
+        <div style="background:#fff;border:1px solid #E7E5E0;border-radius:16px;padding:16px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:11px">
+            <div style="font-size:11.5px;font-family:'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:#9A968E">Known label set 𝒞</div>
+            <span style="font-size:11px;color:#9A968E">{{ labelCount }} classes</span>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <sc-for list="{{ labelChips }}" as="c" hint-placeholder-count="8">
+              <span style="{{ c.style }}">{{ c.name }}</span>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- run -->
+        <button onClick="{{ run }}" style="{{ runStyle }}">{{ runLabel }}</button>
+      </div>
+
+      <!-- RIGHT: results -->
+      <div style="background:#fff;border:1px solid #E7E5E0;border-radius:18px;padding:clamp(16px,2.4vw,26px);min-height:520px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 30px 60px -50px rgba(0,0,0,.3)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+          <div style="font-size:11.5px;font-family:'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:#9A968E">Reasoning trace</div>
+          <div style="font-size:12px;color:#8A867E">{{ traceHint }}</div>
+        </div>
+        <div style="height:4px;border-radius:999px;background:#F0EEEA;overflow:hidden;margin-bottom:20px"><div style="{{ progressStyle }}"></div></div>
+
+        <sc-if value="{{ showTrace }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:12px">
+
+          <!-- a. baseline -->
+          <div style="{{ s1 }}">
+            <div style="border:1px dashed #DAD6CE;border-radius:13px;padding:15px 16px;background:#FCFBF9">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px">
+                <span style="font-size:12px;font-weight:600;color:#8A867E"><span style="font-family:'IBM Plex Mono',monospace;color:#B6B1A8">a</span>&nbsp;&nbsp;Direct VLM baseline</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;background:#F0EEEA;border-radius:7px;padding:3px 10px">{{ ex.baseline }}</span>
+              </div>
+              <p style="font-size:12.5px;color:#8A867E;margin:0">{{ ex.baselineNote }}</p>
+            </div>
+          </div>
+
+          <!-- b. visual arm -->
+          <div style="{{ s2 }}">
+            <div style="border:1.5px solid #C9CDF7;border-radius:13px;padding:15px 16px;background:#F6F6FE">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+                <span style="font-size:12.5px;font-weight:600"><span style="font-family:'IBM Plex Mono',monospace;color:#4F46E5">b</span>&nbsp;&nbsp;Visual arm <span style="color:#9A968E;font-weight:400">· classify pixels</span></span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:#4F46E5;background:#EAEAFD;border-radius:7px;padding:3px 11px">y_vision = {{ ex.visual }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- c. summary -->
+          <div style="{{ s3 }}">
+            <div style="border:1px solid #E7E5E0;border-radius:13px;padding:15px 16px;background:#fff">
+              <div style="font-size:12.5px;font-weight:600;margin-bottom:7px"><span style="font-family:'IBM Plex Mono',monospace;color:#4F46E5">c</span>&nbsp;&nbsp;Generated image summary</div>
+              <p style="font-size:13.5px;color:#3D3A35;margin:0;font-style:italic;line-height:1.55;border-left:2px solid #C9CDF7;padding-left:12px">"{{ ex.summary }}"</p>
+            </div>
+          </div>
+
+          <!-- d. textual arm -->
+          <div style="{{ s4 }}">
+            <div style="border:1.5px solid #C9CDF7;border-radius:13px;padding:15px 16px;background:#F6F6FE">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+                <span style="font-size:12.5px;font-weight:600"><span style="font-family:'IBM Plex Mono',monospace;color:#4F46E5">d</span>&nbsp;&nbsp;Textual arm <span style="color:#9A968E;font-weight:400">· classify summary</span></span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:#4F46E5;background:#EAEAFD;border-radius:7px;padding:3px 11px">y_text = {{ ex.textual }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- e. consistency -->
+          <div style="{{ s5 }}">
+            <div style="border:1px solid #E7E5E0;border-radius:13px;padding:15px 16px;background:#FCFBF9">
+              <div style="font-size:12.5px;font-weight:600;margin-bottom:12px"><span style="font-family:'IBM Plex Mono',monospace;color:#4F46E5">e</span>&nbsp;&nbsp;Cross-modal consistency check</div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;align-items:center;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:#fff;border:1px solid #ECEAE5;border-radius:9px;padding:9px 12px">
+                  <span style="color:#54514B">𝟙[ y_vision {{ ex.agreeOp }} y_text ]</span>
+                  <span style="font-weight:600;color:{{ ex.agreeColor }}">{{ ex.agreeMark }}</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:#fff;border:1px solid #ECEAE5;border-radius:9px;padding:9px 12px">
+                  <span style="color:#54514B">𝟙[ y_vision {{ ex.inSetOp }} 𝒞 ]</span>
+                  <span style="font-weight:600;color:{{ ex.inSetColor }}">{{ ex.inSetMark }}</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:13px;background:#1C1B1A;color:#fff;border-radius:9px;padding:10px 12px">
+                  <span>δ&#770; = 𝟙·𝟙</span>
+                  <span style="font-weight:700;color:{{ ex.deltaColor }}">δ&#770; = {{ ex.delta }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- f. decision -->
+          <div style="{{ s6 }}">
+            <div style="{{ ex.decisionBox }}">
+              <div style="display:flex;align-items:center;gap:14px">
+                <div style="{{ ex.decisionIconBox }}">{{ ex.decisionIcon }}</div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:11px;font-family:'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;opacity:.8;margin-bottom:2px">Final decision · f</div>
+                  <div style="font-size:18px;font-weight:700;letter-spacing:-.01em">{{ ex.decisionLabel }}</div>
+                </div>
+              </div>
+              <p style="font-size:13px;margin:13px 0 0;line-height:1.5;opacity:.92">{{ ex.decisionNote }}</p>
+              <sc-if value="{{ ex.showErrorFlag }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:12px;display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;background:rgba(220,38,38,.1);color:#B91C1C;border:1px solid rgba(220,38,38,.25);border-radius:8px;padding:6px 11px">⚠ {{ ex.errorFlag }}</div>
+              </sc-if>
+            </div>
+          </div>
+
+        </div>
+        </sc-if>
+
+        <!-- idle state -->
+        <sc-if value="{{ showIdle }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:440px;color:#A8A49B">
+            <div style="width:60px;height:60px;border-radius:16px;border:1.5px dashed #D8D4CC;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:18px;color:#C4C0B8">⤳</div>
+            <div style="font-size:15px;font-weight:600;color:#6B6862;margin-bottom:5px">{{ idleTitle }}</div>
+            <div style="font-size:13px;max-width:24em">{{ idleSub }}</div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </section>
+
+  <!-- ERROR MODES -->
+  <section id="errors" style="max-width:1180px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,5vw,56px)">
+    <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:8px">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#4F46E5">03</span>
+      <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:clamp(26px,3.6vw,38px);letter-spacing:-.02em;margin:0">Two ways to be wrong</h2>
+    </div>
+    <p style="color:#54514B;max-width:46em;margin:0 0 32px;font-size:16px">A good fallback rule walks a line between accepting too much and rejecting too much. The consistency check is tuned to cut overconfidence hard while keeping over-rejection in check.</p>
+
+    <div class="split-2" style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <!-- overconfidence -->
+      <div style="background:#fff;border:1px solid #F3C9A8;border-radius:18px;overflow:hidden">
+        <div style="background:#FEF1E7;padding:18px 22px;border-bottom:1px solid #F6D9C2">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="width:30px;height:30px;border-radius:8px;background:#C2410C;color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700">↑</span>
+            <h3 style="font-size:17px;margin:0;font-weight:700;color:#9A3412">Overconfidence error</h3>
+          </div>
+        </div>
+        <div style="padding:22px">
+          <p style="font-size:14px;color:#54514B;margin:0 0 16px">An <strong>unknown</strong> image gets accepted as a known class. A single VLM pass does this constantly — it has no way to say "none of these."</p>
+          <div style="display:flex;align-items:center;gap:10px;font-family:'IBM Plex Mono',monospace;font-size:12.5px">
+            <span style="flex:1;background:#FBFAF8;border:1px solid #ECEAE5;border-radius:9px;padding:9px 11px">tractor 🠖 <strong>truck</strong></span>
+            <span style="color:#C2410C;font-weight:700">accepted ✗</span>
+          </div>
+          <div style="margin-top:14px;padding:13px 15px;background:#F4F4FE;border:1px solid #D7DAF6;border-radius:11px;font-size:13px;color:#3D3A35">
+            <strong style="color:#4F46E5">Caught by us:</strong> the textual arm reads "agricultural vehicle, large rear wheels" and says <em>car</em>, not truck — disagreement → Unknown.
+          </div>
+        </div>
+      </div>
+
+      <!-- over-rejection -->
+      <div style="background:#fff;border:1px solid #E7E5E0;border-radius:18px;overflow:hidden">
+        <div style="background:#EEF0FF;padding:18px 22px;border-bottom:1px solid #DADEFA">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="width:30px;height:30px;border-radius:8px;background:#4F46E5;color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700">↓</span>
+            <h3 style="font-size:17px;margin:0;font-weight:700;color:#3730A3">Over-rejection error</h3>
+          </div>
+        </div>
+        <div style="padding:22px">
+          <p style="font-size:14px;color:#54514B;margin:0 0 16px">A genuinely <strong>known</strong> image gets rejected as Unknown because the two arms split on fine-grained classes that look alike.</p>
+          <div style="display:flex;align-items:center;gap:10px;font-family:'IBM Plex Mono',monospace;font-size:12.5px">
+            <span style="flex:1;background:#FBFAF8;border:1px solid #ECEAE5;border-radius:9px;padding:9px 11px">fox: vis=<strong>fox</strong> / txt=<strong>coyote</strong></span>
+            <span style="color:#C2410C;font-weight:700">rejected ✗</span>
+          </div>
+          <div style="margin-top:14px;padding:13px 15px;background:#FBFAF8;border:1px solid #ECEAE5;border-radius:11px;font-size:13px;color:#3D3A35">
+            <strong style="color:#9A3412">The cost:</strong> abstaining safely sometimes means turning away a label we could have gotten right. Balance ratio <em>R</em> tracks this trade-off.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="results" style="max-width:1180px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,5vw,56px) clamp(60px,8vw,100px)">
+    <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:8px">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#4F46E5">04</span>
+      <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:clamp(26px,3.6vw,38px);letter-spacing:-.02em;margin:0">Results</h2>
+    </div>
+    <p style="color:#54514B;max-width:46em;margin:0 0 32px;font-size:16px">Aggregate metrics on the closed-set benchmark. <span style="font-size:13px;color:#9A968E">(Placeholder figures for the demo.)</span></p>
+
+    <div class="metrics-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px">
+      <sc-for list="{{ metricCards }}" as="m" hint-placeholder-count="4">
+        <div class="lift" style="position:relative;overflow:hidden;background:#fff;border:1px solid #E7E5E0;border-radius:16px;padding:20px;box-shadow:0 1px 2px rgba(0,0,0,.03)">
+          <div style="position:absolute;top:0;left:0;right:0;height:3px;background:{{ m.bar }}"></div>
+          <div style="font-size:12px;color:#8A867E;margin-bottom:10px;min-height:2.6em">{{ m.label }}</div>
+          <div style="display:flex;align-items:baseline;gap:3px"><span style="font-family:'Newsreader',serif;font-size:38px;font-weight:600;letter-spacing:-.02em;color:{{ m.color }};font-variant-numeric:tabular-nums">{{ m.value }}</span><span style="font-family:'Newsreader',serif;font-size:18px;color:#C4C0B8">{{ m.suffix }}</span></div>
+          <div style="font-size:11.5px;color:#9A968E;margin-top:3px">{{ m.unit }}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div class="split-2" style="display:grid;grid-template-columns:1.2fr 1fr;gap:20px;align-items:stretch">
+      <!-- bar chart -->
+      <div class="lift" style="background:#fff;border:1px solid #E7E5E0;border-radius:18px;padding:24px;box-shadow:0 1px 2px rgba(0,0,0,.03)">
+        <div style="font-size:11.5px;font-family:'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:#9A968E;margin-bottom:6px">H-score by method</div>
+        <div style="font-size:13px;color:#8A867E;margin-bottom:24px">Cross-modal consistency beats either single arm.</div>
+        <div style="position:relative;height:230px;padding:0 8px">
+          <div aria-hidden="true" style="position:absolute;inset:0">
+            <sc-for list="{{ gridLines }}" as="g" hint-placeholder-count="4">
+              <div style="position:absolute;left:0;right:0;height:1px;background:#EFEDE8;bottom:{{ g.b }}"><span style="position:absolute;left:-2px;top:-8px;font-size:9.5px;font-family:'IBM Plex Mono',monospace;color:#C4C0B8">{{ g.v }}</span></div>
+            </sc-for>
+          </div>
+          <div style="position:relative;display:flex;align-items:flex-end;justify-content:space-around;gap:18px;height:100%;border-bottom:1.5px solid #E2DFD9">
+            <sc-for list="{{ bars }}" as="b" hint-placeholder-count="3">
+              <div style="flex:1;max-width:120px;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end">
+                <div style="font-family:'Newsreader',serif;font-size:24px;font-weight:600;color:{{ b.color }};margin-bottom:8px;font-variant-numeric:tabular-nums">{{ b.value }}</div>
+                <div style="position:relative;width:100%;border-radius:9px 9px 0 0;background:{{ b.fill }};box-shadow:{{ b.glow }};height:{{ b.h }}"><div style="position:absolute;top:0;left:0;right:0;height:38%;border-radius:9px 9px 0 0;background:linear-gradient(rgba(255,255,255,.28),transparent)"></div></div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-around;gap:18px;margin-top:12px;padding:0 8px">
+          <sc-for list="{{ bars }}" as="b" hint-placeholder-count="3">
+            <div style="flex:1;max-width:120px;text-align:center;font-size:12px;color:#54514B;font-weight:500">{{ b.name }}</div>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- takeaway -->
+      <div style="background:#1C1B1A;color:#fff;border-radius:18px;padding:28px;display:flex;flex-direction:column;justify-content:center">
+        <div style="font-size:11.5px;font-family:'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:#B9B6F2;margin-bottom:16px">Takeaway</div>
+        <p style="font-family:'Newsreader',serif;font-size:23px;line-height:1.35;letter-spacing:-.01em;margin:0 0 18px;text-wrap:pretty">Two cheap, independent reads of the same image — agreeing — is a stronger abstention signal than either confidence score alone.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <span style="font-size:12px;font-family:'IBM Plex Mono',monospace;background:rgba(255,255,255,.08);border-radius:7px;padding:5px 10px">no retraining</span>
+          <span style="font-size:12px;font-family:'IBM Plex Mono',monospace;background:rgba(255,255,255,.08);border-radius:7px;padding:5px 10px">model-agnostic</span>
+          <span style="font-size:12px;font-family:'IBM Plex Mono',monospace;background:rgba(255,255,255,.08);border-radius:7px;padding:5px 10px">+15.1 H</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- footer / cite -->
+    <div style="margin-top:48px;padding-top:28px;border-top:1px solid #E7E5E0;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap">
+      <div>
+        <div style="font-family:'Newsreader',serif;font-size:18px;font-weight:500">Fallback-Enabled Closed-Set Classification with Vision-Language Models</div>
+        <div style="font-size:13px;color:#8A867E;margin-top:4px">Transactions on Machine Learning Research (TMLR) · interactive demo</div>
+      </div>
+      <div style="font-size:12px;font-family:'IBM Plex Mono',monospace;color:#9A968E">δ&#770; = 𝟙[y_v=y_t]·𝟙[y_v∈𝒞]</div>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1180,&quot;height&quot;:900},&quot;knownColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#4F46E5&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;unknownColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#C2410C&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;autoplaySteps&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Demo behavior&quot;}}">
+class Component extends DCLogic {
+  state = { datasetId: 'visda', exampleId: 'A', step: 0, running: false, t: 0 };
+
+  labelSets = {
+    visda: ['aeroplane','bicycle','bus','car','horse','knife','motorcycle','person','plant','skateboard','train','truck'],
+    domainnet: ['bird','cat','dog','fish','flower','tree','car','bicycle','guitar','clock'],
+    inat: ['red fox','gray wolf','coyote','raccoon','red panda','bobcat','mallard duck','monarch butterfly'],
+    custom: ['class A','class B','class C','class D','class E']
+  };
+
+  examples = [
+    {
+      id:'A', datasetId:'visda', datasetName:'VisDA', title:'Bicycle · synthetic', sub:'arms agree, in set',
+      glyph:'🚲', tileBg:'#E8EAF7', imgCaption:'studio render — bicycle', tag:'KNOWN', truth:'known',
+      baseline:'bicycle', baselineNote:'Single-pass guess — happens to be correct here, but offered with no abstain option.',
+      visual:'bicycle', textual:'bicycle',
+      summary:'A 3D-rendered bicycle shot from the side on a plain studio background: two spoked wheels, a diamond frame, and dropped handlebars.',
+      agree:true, inSet:true
+    },
+    {
+      id:'B', datasetId:'visda', datasetName:'VisDA', title:'Tractor · out-of-set', sub:'visual plausible, txt differs',
+      glyph:'🚜', tileBg:'#EEEBE3', imgCaption:'farm vehicle — not in 𝒞', tag:'UNKNOWN', truth:'unknown',
+      baseline:'truck', baselineNote:'Overconfident: a single pass forces an in-set label onto an out-of-set image.',
+      visual:'truck', textual:'car',
+      summary:'A heavy agricultural vehicle with an elevated cab and very large rear wheels, parked in a field — a farm tractor rather than a road truck.',
+      agree:false, inSet:true
+    },
+    {
+      id:'C', datasetId:'inat', datasetName:'iNaturalist', title:'Red fox · in-set', sub:'arms split on look-alikes',
+      glyph:'🦊', tileBg:'#F6E7DD', imgCaption:'red fox in snow', tag:'KNOWN', truth:'known',
+      baseline:'red fox', baselineNote:'Single-pass guess is right — but our check will second-guess it.',
+      visual:'red fox', textual:'coyote',
+      summary:'A small wild canid with a reddish-orange coat, pointed ears, and a bushy white-tipped tail standing in snow.',
+      agree:false, inSet:true
+    },
+    {
+      id:'D', datasetId:'domainnet', datasetName:'DomainNet', title:'Sketch · cat or dog?', sub:'genuinely ambiguous',
+      glyph:'✏️', tileBg:'#ECECEC', imgCaption:'line sketch — ambiguous', tag:'AMBIG', truth:'ambiguous',
+      baseline:'cat', baselineNote:'A single pass commits to one reading of an inherently ambiguous sketch.',
+      visual:'cat', textual:'dog',
+      summary:'A minimal black-line sketch of a small four-legged pet with pointed ears and a curled tail; the abstraction leaves cat and dog both plausible.',
+      agree:false, inSet:true
+    }
+  ];
+
+  datasets = [
+    {id:'visda', name:'VisDA'}, {id:'domainnet', name:'DomainNet'},
+    {id:'inat', name:'iNaturalist'}, {id:'custom', name:'Custom'}
+  ];
+
+  curEx() { return this.examples.find(e => e.id === this.state.exampleId) || null; }
+
+  selectExample = (id) => {
+    const e = this.examples.find(x => x.id === id);
+    this.clearTimers();
+    this.setState({ exampleId: id, datasetId: e.datasetId, step: 0, running: false });
+  };
+  selectDataset = (id) => {
+    this.clearTimers();
+    if (id === 'custom') { this.setState({ datasetId:'custom', exampleId:null, step:0, running:false }); return; }
+    const e = this.examples.find(x => x.datasetId === id);
+    this.setState({ datasetId:id, exampleId: e ? e.id : null, step:0, running:false });
+  };
+  clearTimers() { (this.timers||[]).forEach(clearTimeout); this.timers = []; }
+  componentWillUnmount() { this.clearTimers(); if (this._raf) clearTimeout(this._raf); if (this._io) this._io.disconnect(); if (this._fallback) clearTimeout(this._fallback); }
+
+  componentDidMount() {
+    this._startCount = () => {
+      if (this._counted) return;
+      this._counted = true;
+      if (this._io) this._io.disconnect();
+      const dur = 1300, t0 = Date.now();
+      const tick = () => {
+        const p = Math.min(1, (Date.now() - t0) / dur);
+        this.setState({ t: p });
+        if (p < 1) this._raf = setTimeout(tick, 16);
+      };
+      tick();
+    };
+    const el = document.getElementById('results');
+    if (el && typeof IntersectionObserver !== 'undefined') {
+      this._io = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) this._startCount(); });
+      }, { threshold: 0, rootMargin: '0px 0px -12% 0px' });
+      this._io.observe(el);
+    }
+    // guaranteed fallback so the figures never sit at zero
+    this._fallback = setTimeout(this._startCount, 2600);
+  }
+
+  run = () => {
+    if (!this.state.exampleId) return;
+    this.clearTimers();
+    this.setState({ running:true, step:0 });
+    const auto = this.props.autoplaySteps !== false;
+    if (!auto) { this.setState({ running:false, step:6 }); return; }
+    const d = 340;
+    for (let i = 1; i <= 6; i++) {
+      this.timers.push(setTimeout(() => this.setState({ step:i, running: i < 6 }), i * d));
+    }
+  };
+
+  stepStyle(i) {
+    const on = this.state.step >= i;
+    return { opacity: on ? 1 : 0, transform: on ? 'translateY(0)' : 'translateY(10px)',
+      transition: 'opacity .45s ease, transform .45s cubic-bezier(.22,1,.36,1)',
+      pointerEvents: on ? 'auto' : 'none' };
+  }
+
+  renderVals() {
+    const known = this.props.knownColor || '#4F46E5';
+    const unknown = this.props.unknownColor || '#C2410C';
+    const ex = this.curEx();
+    const isCustom = this.state.datasetId === 'custom';
+    const hasExample = !!ex;
+    const step = this.state.step;
+
+    // dataset chips
+    const datasetChips = this.datasets.map(d => {
+      const active = d.id === this.state.datasetId;
+      return { name: d.name, on: () => this.selectDataset(d.id),
+        style: { cursor:'pointer', fontFamily:"'IBM Plex Sans',sans-serif", fontSize:'13px', fontWeight:600,
+          padding:'9px 8px', borderRadius:'10px', border: active ? '1.5px solid '+known : '1px solid #E7E5E0',
+          background: active ? '#EEF0FF' : '#fff', color: active ? known : '#54514B', transition:'all .15s' } };
+    });
+
+    // example cards
+    const tagColors = { known:{c:known,bg:'#EEF0FF'}, unknown:{c:unknown,bg:'#FEF1E7'}, ambiguous:{c:'#8A867E',bg:'#F0EEEA'} };
+    const exampleCards = this.examples.map(e => {
+      const active = e.id === this.state.exampleId;
+      const tc = tagColors[e.truth];
+      return { ...e, on: () => this.selectExample(e.id),
+        tagStyle: `color:${tc.c};background:${tc.bg}`,
+        style: { display:'flex', alignItems:'center', gap:'10px', width:'100%', cursor:'pointer',
+          padding:'9px 10px', borderRadius:'12px', border: active ? '1.5px solid '+known : '1px solid #ECEAE5',
+          background: active ? '#F6F6FE' : '#FCFBF9', transition:'all .15s', fontFamily:"'IBM Plex Sans',sans-serif" } };
+    });
+
+    // label chips (highlight predictions once revealed)
+    const labels = this.labelSets[this.state.datasetId] || [];
+    const vShown = ex && step >= 2 ? ex.visual : null;
+    const tShown = ex && step >= 4 ? ex.textual : null;
+    const labelChips = labels.map(name => {
+      const isV = name === vShown, isT = name === tShown;
+      let st = { fontFamily:"'IBM Plex Mono',monospace", fontSize:'12px', padding:'4px 9px', borderRadius:'7px',
+        border:'1px solid #ECEAE5', background:'#FBFAF8', color:'#54514B', transition:'all .3s' };
+      if (isV && isT) st = {...st, background:'#EAEAFD', border:'1.5px solid '+known, color:known, fontWeight:600 };
+      else if (isV) st = {...st, background:'#EEF0FF', border:'1.5px solid #C9CDF7', color:known, fontWeight:600 };
+      else if (isT) st = {...st, background:'#FEF1E7', border:'1.5px solid #F3C9A8', color:unknown, fontWeight:600 };
+      return { name, style: st };
+    });
+
+    // run button
+    const canRun = hasExample;
+    const runStyle = { width:'100%', cursor: canRun ? 'pointer':'not-allowed', border:'none',
+      padding:'15px', borderRadius:'12px', fontFamily:"'IBM Plex Sans',sans-serif", fontSize:'15px', fontWeight:600,
+      color:'#fff', background: canRun ? known : '#C4C0B8',
+      boxShadow: canRun ? '0 1px 2px rgba(79,70,229,.4),0 8px 22px -8px rgba(79,70,229,.55)' : 'none',
+      transition:'all .15s', animation: this.state.running ? 'pulseRing 1.3s' : 'none' };
+    const runLabel = this.state.running ? 'Running cross-modal check…' : (step >= 6 ? 'Run again' : 'Run Cross-Modal Check');
+
+    // decision derived
+    let exOut = ex;
+    if (ex) {
+      const accept = ex.agree && ex.inSet;
+      const decision = accept ? 'known' : 'unknown';
+      const isOverReject = !accept && ex.truth === 'known';
+      const isOverconf = ex.truth === 'unknown'; // baseline accepted it
+      const decisionLabel = accept ? 'Known: accepted' : 'Fallback: Unknown';
+      const dc = accept ? known : unknown;
+      const dbg = accept ? '#EEF0FF' : '#FEF1E7';
+      const dbd = accept ? '#C9CDF7' : '#F3C9A8';
+      exOut = { ...ex,
+        truthTag: ex.truth === 'known' ? 'ground truth: known' : ex.truth === 'unknown' ? 'ground truth: unknown' : 'ground truth: ambiguous',
+        agreeOp: ex.agree ? '=' : '≠',
+        agreeMark: ex.agree ? '✓ 1' : '✗ 0',
+        agreeColor: ex.agree ? known : unknown,
+        inSetOp: ex.inSet ? '∈' : '∉',
+        inSetMark: ex.inSet ? '✓ 1' : '✗ 0',
+        inSetColor: ex.inSet ? known : unknown,
+        delta: accept ? '1' : '0',
+        deltaColor: accept ? '#B9B6F2' : '#F6B98E',
+        decisionLabel, decisionIcon: accept ? '✓' : '⤺',
+        decisionNote: this.noteFor(ex, accept),
+        decisionBox: { borderRadius:'14px', padding:'20px 22px', border:'1.5px solid '+dbd, background:dbg, color: accept ? '#312E81' : '#7C2D12' },
+        decisionIconBox: { width:'46px', height:'46px', borderRadius:'12px', flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center', fontSize:'22px', fontWeight:700, color:'#fff', background: dc },
+        showErrorFlag: isOverReject || (isOverconf && false),
+        errorFlag: isOverReject ? 'Over-rejection: a true known label was abstained on' : ''
+      };
+    }
+
+    const showTrace = hasExample && step > 0;
+    const showIdle = !showTrace;
+    const idleTitle = isCustom ? 'Custom mode' : 'Ready to run';
+    const idleSub = isCustom ? 'Drop an image above, then pick a curated example to see a full mock trace.' : 'Press “Run Cross-Modal Check” to trace both reasoning arms step by step.';
+    const traceHint = !hasExample ? '—' : step >= 6 ? 'complete' : step > 0 ? 'step '+step+' / 6' : 'idle';
+
+    const ease = p => 1 - Math.pow(1 - p, 3);
+    const tt = ease(Math.max(0, Math.min(1, this.state.t)));
+    const metricCards = [
+      { label:'H-score (harmonic mean of known / unknown accuracy)', value:(78.2*tt).toFixed(1), suffix:'', unit:'cross-modal', color: known, bar:'linear-gradient(90deg,'+known+','+known+')' },
+      { label:'Weighted known accuracy', value:(81.4*tt).toFixed(1), suffix:'%', unit:'% accepted correctly', color:'#1C1B1A', bar:'#DAD7F4' },
+      { label:'Weighted unknown accuracy', value:(75.3*tt).toFixed(1), suffix:'%', unit:'% abstained correctly', color:'#1C1B1A', bar:'#F3D7C4' },
+      { label:'Balance ratio R (known ↔ unknown)', value:(0.93*tt).toFixed(2), suffix:'', unit:'closer to 1 is better', color:'#1C1B1A', bar:'#E2DFD9' }
+    ];
+    const max = 88;
+    const gridLines = [0,25,50,75].map(v => ({ v: String(v), b: (v/max*100)+'%' }));
+    const bars = [
+      { name:'Visual-only', value:(16.1*tt).toFixed(1), fill:'linear-gradient(180deg,#D7D9F4,#BFC3EC)', color:'#9A968E', glow:'none', h: (16.1*tt/max*100)+'%' },
+      { name:'Textual-only', value:(63.1*tt).toFixed(1), fill:'linear-gradient(180deg,#A9A2F2,#8076E6)', color:'#6B6862', glow:'0 8px 22px -10px rgba(128,118,230,.5)', h: (63.1*tt/max*100)+'%' },
+      { name:'Cross-modal', value:(78.2*tt).toFixed(1), fill:'linear-gradient(180deg,#6D64EC,'+known+')', color:known, glow:'0 10px 26px -8px rgba(79,70,229,.55)', h: (78.2*tt/max*100)+'%' }
+    ];
+
+    return {
+      ex: exOut, hasExample, isCustom, datasetChips, exampleCards, labelChips,
+      labelCount: labels.length, runStyle, runLabel, run: this.run,
+      showTrace, showIdle, idleTitle, idleSub, traceHint,
+      s1:this.stepStyle(1), s2:this.stepStyle(2), s3:this.stepStyle(3),
+      s4:this.stepStyle(4), s5:this.stepStyle(5), s6:this.stepStyle(6),
+      metricCards, bars, gridLines, progressStyle: { width: (step/6*100)+'%', height:'100%', borderRadius:'999px', background:'linear-gradient(90deg,#6D64EC,'+known+')', transition:'width .45s cubic-bezier(.22,1,.36,1)' }
+    };
+  }
+
+  noteFor(ex, accept) {
+    if (ex.id === 'A') return 'Both arms independently name bicycle, which is in 𝒞. The prediction is accepted with confidence.';
+    if (ex.id === 'B') return 'Visual says truck, textual says car. The arms disagree, so we abstain — correctly refusing to label an out-of-set tractor.';
+    if (ex.id === 'C') return 'Visual says red fox, textual says coyote. Disagreement forces a fallback — but the image really is a fox, so this is the cost of caution.';
+    if (ex.id === 'D') return 'The arms split between cat and dog. Rather than commit, the system abstains — the right call for a genuinely ambiguous sketch.';
+    return accept ? 'Arms agree and the label is in set.' : 'Arms disagree — fallback to Unknown.';
+  }
+}
+</script>
+</body>
+</html>
